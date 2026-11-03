@@ -10,134 +10,153 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Mochiy+Pop+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-/* Layout: 宇宙港の発着ロビー。上に固定ナビ、大きな注目枠、その下にタグで絞れるゲーム棚。詳細・ライブラリ・ウィッシュリストはハッシュで切り替え */
+/* Layout: 夜の宇宙港を舞台にした、太い黒線とベタ塗りのカートゥーン。紙のようなクリーム色の看板パネルが、紫の夜空に貼り付けてある */
 :root{
   color-scheme: dark;
-  --bg:#0f1720;        /* 夜の港 */
-  --panel:#18232f;     /* 棚の板 */
-  --panel-2:#22303f;
-  --line:#2c3d4f;
-  --fg:#dbe4ea;
-  --muted:#8a9bab;
-  --accent:#e3b04b;    /* 誘導灯のアンバー */
-  --accent-ink:#1b1406;
-  --slime:#7fc75a;     /* 無料・所持の印 */
-  --danger:#e0705a;
-  --f-logo:"Luckiest Guy","Arial Black",sans-serif;
-  --f-head:"Mochiy Pop One","Zen Kaku Gothic New","Hiragino Sans",sans-serif;
+  --sky:#2b1d44;       /* 夜空 */
+  --sky-2:#3b2860;
+  --paper:#f6ecd2;     /* 看板の紙 */
+  --paper-2:#e6d6ae;   /* 紙の影 */
+  --ink:#141414;       /* 線 */
+  --slime:#8fd14f;     /* スライム */
+  --slime-dk:#5c9a2c;
+  --sun:#ffcf3a;       /* 誘導灯 */
+  --pink:#ff7a93;
+  --mute:#6b5b45;
+  --f-logo:"Luckiest Guy","Bungee","Arial Black",Impact,sans-serif;
+  --f-head:"Mochiy Pop One","Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
   --f-body:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --line:3px solid var(--ink);
+  --pop:5px 5px 0 var(--ink);
 }
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.65}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+body{background:var(--sky);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.65;
+  background-image:radial-gradient(circle at 12% 18%,#fff 1.2px,transparent 1.6px),radial-gradient(circle at 78% 42%,#fff 1px,transparent 1.4px),radial-gradient(circle at 45% 80%,#ffe9a8 1.4px,transparent 1.8px);
+  background-size:180px 160px,240px 210px,300px 260px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--slime)}
 a{color:inherit}
 button{font:inherit;color:inherit;cursor:pointer}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
 .wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 
-/* nav */
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--panel);border-bottom:1px solid var(--line)}
-.nav{display:flex;align-items:center;gap:20px;padding-block:10px;flex-wrap:wrap}
-.logo{font-family:var(--f-logo);font-size:26px;letter-spacing:.04em;text-decoration:none;color:var(--fg);display:flex;align-items:center;gap:8px;line-height:1}
-.logo svg{width:28px;height:28px}
-.logo b{color:var(--slime);font-weight:400}
-.tabs{display:flex;gap:4px;flex-wrap:wrap}
-.tabs a{text-decoration:none;padding:6px 12px;border-radius:6px;font-weight:700;color:var(--muted);font-size:14px;letter-spacing:.04em}
-.tabs a[aria-current="page"]{color:var(--fg);background:var(--panel-2)}
-.tabs a .n{font-family:var(--f-mono);font-size:12px;margin-left:4px;color:var(--accent)}
+/* ヘッダー：スライムの帯から下にしずくが垂れる */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--slime);border-bottom:var(--line)}
+header::after{content:"";position:absolute;left:0;right:0;top:100%;height:22px;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 22' preserveAspectRatio='none'%3E%3Cpath d='M0 0h240v2c-8 0-9 6-14 6s-6-6-12-6-6 14-13 14-6-14-12-14-7 4-12 4-6-4-14-4-8 18-15 18-7-18-14-18-6 6-12 6-5-6-12-6-6 10-12 10-6-10-12-10-7 3-13 3-6-3-13-3-7 16-14 16-7-16-13-16-6 5-12 5-6-5-12-5z' fill='%238fd14f' stroke='%23141414' stroke-width='3' stroke-linejoin='round'/%3E%3Crect x='0' y='-2' width='240' height='3.2' fill='%238fd14f'/%3E%3C/svg%3E") repeat-x 0 -1px/240px 22px}
+.nav{display:flex;align-items:center;gap:18px;padding-block:10px;flex-wrap:wrap}
+.logo{font-family:var(--f-logo);font-size:32px;letter-spacing:.04em;text-decoration:none;color:var(--sun);display:flex;align-items:center;gap:8px;line-height:1;
+  -webkit-text-stroke:.08em var(--ink);paint-order:stroke fill;text-shadow:.07em .08em 0 var(--ink);transform:rotate(-3deg)}
+.logo svg{width:38px;height:38px;transform:rotate(6deg)}
+.logo b{color:#fff;font-weight:400}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tabs a{text-decoration:none;padding:5px 14px;border-radius:999px;font-family:var(--f-head);font-size:14px;background:var(--paper);border:var(--line);box-shadow:3px 3px 0 var(--ink);transition:transform .12s,box-shadow .12s}
+.tabs a:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.tabs a[aria-current="page"]{background:var(--sun)}
+.tabs a .n{font-family:var(--f-logo);font-size:14px;margin-left:6px;background:var(--pink);color:#fff;border:2px solid var(--ink);border-radius:999px;padding:0 6px;-webkit-text-stroke:.1em var(--ink);paint-order:stroke fill}
 .search{margin-left:auto;flex:1 1 200px;max-width:280px}
-.search input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 10px;color:var(--fg);font:inherit;font-size:14px}
+.search input{width:100%;background:#fff;border:var(--line);border-radius:999px;padding:7px 14px;color:var(--ink);font:inherit;font-size:14px;box-shadow:inset 2px 2px 0 var(--paper-2)}
 
-main{padding-block:24px 64px}
+main{padding-block:44px 72px}
 h1,h2,h3{font-family:var(--f-head);font-weight:400;text-wrap:balance;margin:0;line-height:1.3}
-.eyebrow{font-size:12px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;font-weight:700}
+.eyebrow{font-family:var(--f-head);font-size:18px;color:#fff;-webkit-text-stroke:.24em var(--ink);paint-order:stroke fill;letter-spacing:.06em}
 
-/* cover art */
-.cover{position:relative;aspect-ratio:16/9;max-width:100%;overflow:hidden;border-radius:6px;background:var(--c1)}
+/* カバー */
+.cover{position:relative;aspect-ratio:16/9;max-width:100%;overflow:hidden;background:var(--c1)}
 .cover canvas{position:absolute;inset:0;width:100%;height:100%}
-.cover .ttl{position:absolute;left:6%;bottom:8%;right:6%;font-family:var(--f-logo);color:#fff;letter-spacing:.03em;line-height:.95;text-shadow:0 3px 0 #000,0 0 2px #000;-webkit-text-stroke:1.5px #000;paint-order:stroke fill}
+.cover .ttl{position:absolute;left:6%;bottom:8%;right:6%;font-family:var(--f-logo);color:#fff;letter-spacing:.03em;line-height:.95;-webkit-text-stroke:.07em var(--ink);paint-order:stroke fill;text-shadow:.06em .07em 0 var(--ink);transform:rotate(-2deg);transform-origin:left bottom}
 
-/* hero */
-.hero{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:0;background:var(--panel);border-radius:8px;overflow:hidden;border:1px solid var(--line)}
-.hero .cover{border-radius:0}
-.hero .cover .ttl{font-size:clamp(30px,5vw,56px)}
-.hero-info{padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0}
-.hero-info h2{font-size:22px}
-.hero-info p{margin:0;color:var(--muted);font-size:14px}
-.dots{display:flex;gap:6px;justify-content:center;padding-top:12px}
-.dots button{width:28px;height:6px;border-radius:3px;border:0;background:var(--line);padding:0}
-.dots button[aria-pressed="true"]{background:var(--accent)}
+/* 注目：大きな看板 */
+.hero{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);background:var(--paper);border:4px solid var(--ink);border-radius:18px;overflow:hidden;box-shadow:8px 8px 0 var(--ink)}
+.hero .cover{border-right:4px solid var(--ink)}
+.hero .cover .ttl{font-size:clamp(34px,5.4vw,64px)}
+.hero-info{padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0;background:linear-gradient(transparent 92%,var(--paper-2) 92%)}
+.hero-info h2{font-size:24px}
+.hero-info p{margin:0;color:var(--mute);font-size:14px;font-weight:500}
+.dots{display:flex;gap:8px;justify-content:center;padding-top:16px}
+.dots button{width:16px;height:16px;border-radius:50%;border:3px solid var(--ink);background:var(--paper);padding:0}
+.dots button[aria-pressed="true"]{background:var(--slime);transform:scale(1.25)}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{font-size:12px;padding:2px 9px;border-radius:4px;background:var(--panel-2);color:var(--fg);border:1px solid var(--line)}
-.price{display:inline-flex;align-items:center;gap:8px;font-weight:700}
-.free{background:var(--slime);color:#0e1a08;font-size:13px;padding:3px 10px;border-radius:4px;letter-spacing:.06em}
-.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
-.btn{border:0;border-radius:6px;padding:9px 16px;font-weight:700;font-size:14px;background:var(--panel-2);border:1px solid var(--line)}
-.btn:hover{border-color:var(--muted)}
-.btn.play{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.btn.play:hover{filter:brightness(1.08)}
-.btn.on{color:var(--slime);border-color:var(--slime)}
+.tag{font-size:12px;font-weight:700;padding:1px 10px;border-radius:999px;background:#fff;border:2px solid var(--ink)}
+.price{display:inline-flex;align-items:center;gap:8px}
+.free{display:inline-block;font-family:var(--f-logo);font-size:16px;letter-spacing:.06em;background:var(--slime);color:#fff;padding:2px 12px 0;border:2.5px solid var(--ink);border-radius:8px;-webkit-text-stroke:.12em var(--ink);paint-order:stroke fill;transform:rotate(-4deg);box-shadow:2px 2px 0 var(--ink)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
+.btn{border:var(--line);border-radius:12px;padding:8px 16px;font-family:var(--f-head);font-size:14px;background:#fff;box-shadow:4px 4px 0 var(--ink);transition:transform .1s,box-shadow .1s;text-decoration:none;display:inline-block}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.play{background:var(--sun);font-size:15px}
+.btn.on{background:var(--slime);color:var(--ink)}
 
-/* shelf */
-.shelf-head{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:36px 0 14px}
-.shelf-head h2{font-size:20px}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 12px;font-size:13px;color:var(--muted)}
-.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;transition:transform .15s,border-color .15s}
-.card:hover{transform:translateY(-3px);border-color:var(--muted)}
-.card .cover{border-radius:0}
-.card .cover .ttl{font-size:26px}
+/* 棚 */
+.shelf-head{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:44px 0 18px}
+.shelf-head h2{font-size:24px;color:#fff;-webkit-text-stroke:.2em var(--ink);paint-order:stroke fill}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:var(--line);background:var(--paper);border-radius:999px;padding:3px 13px;font-size:13px;font-weight:700;box-shadow:2px 2px 0 var(--ink)}
+.chip[aria-pressed="true"]{background:var(--pink);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px}
+.card{background:var(--paper);border:var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;box-shadow:var(--pop);transition:transform .15s,box-shadow .15s}
+.card:nth-child(3n+1){transform:rotate(-1deg)}
+.card:nth-child(3n+2){transform:rotate(.8deg)}
+.card:hover{transform:translate(-2px,-4px) rotate(0);box-shadow:8px 9px 0 var(--ink)}
+.card .cover{border-bottom:var(--line)}
+.card .cover .ttl{font-size:28px}
 .card-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
 .card-body h3{font-size:16px}
-.card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;font-size:13px;color:var(--muted)}
-.owned{color:var(--slime);font-weight:700;font-size:12px}
-.empty{padding:40px 20px;text-align:center;color:var(--muted);background:var(--panel);border:1px dashed var(--line);border-radius:8px}
-.empty h3{color:var(--fg);margin-bottom:6px;font-size:18px}
+.card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;font-size:13px;font-weight:700;color:var(--mute)}
+.owned{color:var(--slime-dk);font-weight:700;font-size:12px}
+.empty{padding:40px 20px;text-align:center;color:var(--mute);background:var(--paper);border:3px dashed var(--ink);border-radius:16px}
+.empty h3{color:var(--ink);margin-bottom:6px;font-size:18px}
 
-/* detail */
-.back{display:inline-block;margin-bottom:14px;color:var(--muted);text-decoration:none;font-size:14px}
-.detail{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
-.detail .cover .ttl{font-size:clamp(32px,6vw,64px)}
-.detail h1{font-size:clamp(24px,4vw,34px);margin-bottom:10px}
-.side{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
-.meta{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:0}
-.meta dt{color:var(--muted)}
+/* 詳細 */
+.back{display:inline-block;margin-bottom:18px;text-decoration:none;font-family:var(--f-head);font-size:14px;color:#fff;-webkit-text-stroke:.24em var(--ink);paint-order:stroke fill}
+.detail{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:28px;align-items:start}
+.detail>div>.cover{border:4px solid var(--ink);border-radius:18px;box-shadow:8px 8px 0 var(--ink)}
+.detail .cover .ttl{font-size:clamp(34px,6vw,68px)}
+.detail h1{font-size:clamp(24px,4vw,32px);margin-bottom:10px}
+.side{background:var(--paper);border:4px solid var(--ink);border-radius:18px;box-shadow:8px 8px 0 var(--ink);padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:0;padding:12px;background:#fff;border:2px solid var(--ink);border-radius:10px}
+.meta dt{color:var(--mute);font-weight:700}
 .meta dd{margin:0}
-.desc{max-width:65ch}
-.desc p{margin:0 0 12px}
-.rules{margin:18px 0 0;padding:16px 18px;background:var(--panel);border-radius:8px;border:1px solid var(--line);max-width:65ch}
-.rules h3{font-size:15px;margin-bottom:8px}
-.rules ol{margin:0;padding-left:20px}
-.version{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.desc{max-width:65ch;background:var(--paper);border:var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--pop)}
+.desc p{margin:0 0 10px}
+.desc p:last-child{margin:0}
+.rules{margin:22px 0 0;padding:16px 18px;background:var(--sun);border-radius:14px;border:var(--line);box-shadow:var(--pop);max-width:65ch;transform:rotate(-.6deg)}
+.rules h3{font-size:16px;margin-bottom:8px}
+.rules ol{margin:0;padding-left:22px;font-weight:500}
+.version{font-family:var(--f-mono);font-size:12px;color:var(--mute)}
 
-/* library */
-.lib{display:flex;flex-direction:column;gap:10px}
-.lib-row{display:grid;grid-template-columns:160px minmax(0,1fr) auto;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px}
+/* ライブラリ */
+.lib{display:flex;flex-direction:column;gap:14px}
+.lib-row{display:grid;grid-template-columns:160px minmax(0,1fr) auto;gap:16px;align-items:center;background:var(--paper);border:var(--line);border-radius:14px;padding:10px;box-shadow:var(--pop)}
+.lib-row .cover{border:var(--line);border-radius:10px}
 .lib-row .cover .ttl{font-size:16px}
 .lib-row h3{font-size:16px}
-.lib-row p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.lib-row p{margin:2px 0 0;color:var(--mute);font-size:13px}
+.page-title{font-size:28px;margin-bottom:18px;color:#fff;-webkit-text-stroke:.2em var(--ink);paint-order:stroke fill}
+.page-title .version{color:var(--sun);-webkit-text-stroke:0;font-size:14px;margin-left:6px}
 
-/* modal */
-.modal-bg{position:fixed;inset:0;background:rgba(5,9,14,.72);display:grid;place-items:center;z-index:20;padding:20px}
-.modal{background:var(--panel);border:1px solid var(--line);border-radius:10px;max-width:420px;width:100%;padding:22px;display:flex;flex-direction:column;gap:12px}
-.modal h3{font-size:18px}
-.modal p{margin:0;color:var(--muted);font-size:14px}
+/* ふきだしのモーダル */
+.modal-bg{position:fixed;inset:0;background:rgba(20,12,34,.7);display:grid;place-items:center;z-index:20;padding:20px}
+.modal{position:relative;background:#fff;border:4px solid var(--ink);border-radius:24px;max-width:420px;width:100%;padding:24px;display:flex;flex-direction:column;gap:12px;box-shadow:8px 8px 0 var(--ink);animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
+.modal::after{content:"";position:absolute;left:44px;bottom:-26px;width:30px;height:30px;background:#fff;border-right:4px solid var(--ink);border-bottom:4px solid var(--ink);transform:skewY(30deg) rotate(30deg)}
+.modal h3{font-size:20px}
+.modal p{margin:0;font-size:14px;font-weight:500}
+@keyframes pop{from{transform:scale(.6) rotate(-6deg)}to{transform:none}}
 
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:6px;font-weight:700;font-size:14px;z-index:30}
+.toast{position:fixed;left:50%;transform:translateX(-50%) rotate(-2deg);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--sun);color:var(--ink);padding:8px 18px;border:var(--line);border-radius:12px;box-shadow:4px 4px 0 var(--ink);font-family:var(--f-head);font-size:14px;z-index:30}
 
-footer{border-top:1px solid var(--line);color:var(--muted);font-size:12px}
-footer .wrap{padding-block:20px}
+footer{background:var(--ink);color:var(--paper);font-size:12px}
+footer .wrap{padding-block:22px}
 
 @media (max-width:760px){
   .hero,.detail{grid-template-columns:1fr}
+  .hero .cover{border-right:0;border-bottom:4px solid var(--ink)}
   .lib-row{grid-template-columns:96px minmax(0,1fr)}
   .lib-row .btns{grid-column:1/-1}
   .search{max-width:none;order:3;flex-basis:100%}
+  .card:nth-child(n){transform:none}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
 <header>
@@ -157,7 +176,7 @@ footer .wrap{padding-block:20px}
 
 <main class="wrap" id="view"></main>
 
-<footer><div class="wrap">SLIME DOCK ― 押田ようへいの宇宙人ゲームがすべて無料で遊べる発着場。ライブラリとウィッシュリストはこのブラウザに保存されます。</div></footer>
+<footer><div class="wrap">SLIME DOCK ― YOHEI WHY YOGAFLAT OSHIDA の宇宙人ゲームがすべて無料で遊べる発着場。ライブラリとウィッシュリストはこのブラウザに保存されます。</div></footer>
 
 <script>
 const GAMES=[
@@ -206,19 +225,19 @@ function paint(cv){
   const gr=x.createLinearGradient(0,0,W,H); gr.addColorStop(0,g.c1); gr.addColorStop(1,g.c2); x.fillStyle=gr; x.fillRect(0,0,W,H);
   x.fillStyle="rgba(255,255,255,.7)"; for(let i=0;i<60;i++){x.beginPath();x.arc(rnd()*W,rnd()*H*.7,rnd()*1.6*d,0,7);x.fill()}
   // 地平線の丘
-  x.fillStyle="rgba(0,0,0,.35)"; x.beginPath(); x.moveTo(0,H); for(let i=0;i<=8;i++){x.lineTo(W*i/8,H*(.78+rnd()*.1))} x.lineTo(W,H); x.fill();
+  x.fillStyle="rgba(0,0,0,.28)"; x.strokeStyle="#141414"; x.lineWidth=3*d; x.beginPath(); x.moveTo(0,H); for(let i=0;i<=8;i++){x.lineTo(W*i/8,H*(.78+rnd()*.1))} x.lineTo(W,H); x.fill(); x.stroke();
   // 大きな目（数と位置はゲームごと）
   const n=1+Math.floor(rnd()*3);
   for(let i=0;i<n;i++){
     const ex=W*(.55+rnd()*.38), ey=H*(.2+rnd()*.35), er=H*(.09+rnd()*.12);
-    x.lineWidth=Math.max(2,er*.12); x.strokeStyle="#000";
+    x.lineWidth=Math.max(3*d,er*.14); x.strokeStyle="#000";
     x.fillStyle="#f4f1e6"; x.beginPath(); x.ellipse(ex,ey,er,er*.92,0,0,7); x.fill(); x.stroke();
     x.fillStyle=g.eye; x.beginPath(); x.arc(ex+er*.18,ey+er*.08,er*.5,0,7); x.fill();
     x.fillStyle="#000"; x.beginPath(); x.arc(ex+er*.24,ey+er*.1,er*.26,0,7); x.fill();
     x.fillStyle="#fff"; x.beginPath(); x.arc(ex+er*.05,ey-er*.12,er*.1,0,7); x.fill();
   }
   // スライムのしずく
-  x.fillStyle="rgba(127,199,90,.9)"; x.strokeStyle="#000"; x.lineWidth=Math.max(1.5,2*d);
+  x.fillStyle="#8fd14f"; x.strokeStyle="#141414"; x.lineWidth=3*d;
   for(let i=0;i<4;i++){const sx=W*rnd(), len=H*(.05+rnd()*.14), w=W*.02+rnd()*W*.02;x.beginPath();x.moveTo(sx-w,0);x.lineTo(sx-w*.5,len);x.arc(sx,len,w*.5,Math.PI,0,true);x.lineTo(sx+w,0);x.fill();x.stroke()}
 }
 function paintAll(){document.querySelectorAll("canvas[data-g]").forEach(paint)}
@@ -242,7 +261,7 @@ function storeView(){
   const list=GAMES.filter(g=>(tagFilter==="すべて"||g.tags.includes(tagFilter))&&(!q||(g.title+g.short+g.tags.join("")).toLowerCase().includes(q)));
   const f=byId(FEATURED[heroIdx]);
   return `${q?"":`<section aria-label="おすすめ">
-    <p class="eyebrow" style="margin:0 0 10px">注目のゲーム</p>
+    <p class="eyebrow" style="margin:0 0 14px">注目のゲーム</p>
     <div class="hero">
       <a href="#game-${f.id}" aria-label="${esc(f.title)} の詳細">${coverHTML(f)}</a>
       <div class="hero-info"><h2>${esc(f.title)} <span class="version">${esc(f.ver)}</span></h2><p>${esc(f.short)}</p>${tagsHTML(f)}
@@ -265,7 +284,7 @@ function detailView(g){
     <aside class="side">
       <div><h1>${esc(g.title)}</h1>${tagsHTML(g)}</div>
       <p style="margin:0;color:var(--muted);font-size:14px">${esc(g.short)}</p>
-      <dl class="meta"><dt>価格</dt><dd><span class="free">無料</span></dd><dt>人数</dt><dd>${esc(g.players)}</dd><dt>1回の時間</dt><dd>${esc(g.time)}</dd><dt>版</dt><dd class="version">${esc(g.ver)}</dd><dt>作者</dt><dd>押田ようへい</dd></dl>
+      <dl class="meta"><dt>価格</dt><dd><span class="free">無料</span></dd><dt>人数</dt><dd>${esc(g.players)}</dd><dt>1回の時間</dt><dd>${esc(g.time)}</dd><dt>版</dt><dd class="version">${esc(g.ver)}</dd><dt>作者</dt><dd>YOHEI WHY YOGAFLAT OSHIDA</dd></dl>
       ${actionBtns(g)}
     </aside>
   </div>`;
@@ -274,8 +293,8 @@ function detailView(g){
 function listView(ids,kind){
   const gs=ids.map(byId).filter(Boolean);
   const title=kind==="library"?"ライブラリ":"ウィッシュリスト";
-  if(!gs.length) return `<h1 style="font-size:24px;margin-bottom:16px">${title}</h1><div class="empty"><h3>${kind==="library"?"まだゲームがありません":"まだ何も入っていません"}</h3>ストアのゲームで「${kind==="library"?"ライブラリに追加":"☆ ウィッシュリスト"}」を押すと、ここに並びます。<div class="btns" style="justify-content:center;margin-top:14px"><a class="btn play" href="#store" style="text-decoration:none">ストアを見る</a></div></div>`;
-  return `<h1 style="font-size:24px;margin-bottom:16px">${title} <span class="version">${gs.length}本</span></h1><div class="lib">${gs.map(g=>`<div class="lib-row">
+  if(!gs.length) return `<h1 class="page-title">${title}</h1><div class="empty"><h3>${kind==="library"?"まだゲームがありません":"まだ何も入っていません"}</h3>ストアのゲームで「${kind==="library"?"ライブラリに追加":"☆ ウィッシュリスト"}」を押すと、ここに並びます。<div class="btns" style="justify-content:center;margin-top:14px"><a class="btn play" href="#store" style="text-decoration:none">ストアを見る</a></div></div>`;
+  return `<h1 class="page-title">${title} <span class="version">${gs.length}本</span></h1><div class="lib">${gs.map(g=>`<div class="lib-row">
     <a href="#game-${g.id}" aria-label="${esc(g.title)} の詳細">${coverHTML(g)}</a>
     <div style="min-width:0"><h3>${esc(g.title)}</h3><p>${esc(g.short)}</p></div>
     <div class="btns"><button class="btn play" data-act="play" data-id="${g.id}">プレイ</button>
