@@ -1,5 +1,324 @@
-<html>
-    <head>
-        <meta http-equiv="refresh" content="0; url=https://yohei-oss.github.io/template/index.html">
-    </head>
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>SLIME DOCK</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Mochiy+Pop+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: 宇宙港の発着ロビー。上に固定ナビ、大きな注目枠、その下にタグで絞れるゲーム棚。詳細・ライブラリ・ウィッシュリストはハッシュで切り替え */
+:root{
+  color-scheme: dark;
+  --bg:#0f1720;        /* 夜の港 */
+  --panel:#18232f;     /* 棚の板 */
+  --panel-2:#22303f;
+  --line:#2c3d4f;
+  --fg:#dbe4ea;
+  --muted:#8a9bab;
+  --accent:#e3b04b;    /* 誘導灯のアンバー */
+  --accent-ink:#1b1406;
+  --slime:#7fc75a;     /* 無料・所持の印 */
+  --danger:#e0705a;
+  --f-logo:"Luckiest Guy","Arial Black",sans-serif;
+  --f-head:"Mochiy Pop One","Zen Kaku Gothic New","Hiragino Sans",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.65}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* nav */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--panel);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:20px;padding-block:10px;flex-wrap:wrap}
+.logo{font-family:var(--f-logo);font-size:26px;letter-spacing:.04em;text-decoration:none;color:var(--fg);display:flex;align-items:center;gap:8px;line-height:1}
+.logo svg{width:28px;height:28px}
+.logo b{color:var(--slime);font-weight:400}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tabs a{text-decoration:none;padding:6px 12px;border-radius:6px;font-weight:700;color:var(--muted);font-size:14px;letter-spacing:.04em}
+.tabs a[aria-current="page"]{color:var(--fg);background:var(--panel-2)}
+.tabs a .n{font-family:var(--f-mono);font-size:12px;margin-left:4px;color:var(--accent)}
+.search{margin-left:auto;flex:1 1 200px;max-width:280px}
+.search input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 10px;color:var(--fg);font:inherit;font-size:14px}
+
+main{padding-block:24px 64px}
+h1,h2,h3{font-family:var(--f-head);font-weight:400;text-wrap:balance;margin:0;line-height:1.3}
+.eyebrow{font-size:12px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;font-weight:700}
+
+/* cover art */
+.cover{position:relative;aspect-ratio:16/9;max-width:100%;overflow:hidden;border-radius:6px;background:var(--c1)}
+.cover canvas{position:absolute;inset:0;width:100%;height:100%}
+.cover .ttl{position:absolute;left:6%;bottom:8%;right:6%;font-family:var(--f-logo);color:#fff;letter-spacing:.03em;line-height:.95;text-shadow:0 3px 0 #000,0 0 2px #000;-webkit-text-stroke:1.5px #000;paint-order:stroke fill}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:0;background:var(--panel);border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.hero .cover{border-radius:0}
+.hero .cover .ttl{font-size:clamp(30px,5vw,56px)}
+.hero-info{padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.hero-info h2{font-size:22px}
+.hero-info p{margin:0;color:var(--muted);font-size:14px}
+.dots{display:flex;gap:6px;justify-content:center;padding-top:12px}
+.dots button{width:28px;height:6px;border-radius:3px;border:0;background:var(--line);padding:0}
+.dots button[aria-pressed="true"]{background:var(--accent)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;padding:2px 9px;border-radius:4px;background:var(--panel-2);color:var(--fg);border:1px solid var(--line)}
+.price{display:inline-flex;align-items:center;gap:8px;font-weight:700}
+.free{background:var(--slime);color:#0e1a08;font-size:13px;padding:3px 10px;border-radius:4px;letter-spacing:.06em}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.btn{border:0;border-radius:6px;padding:9px 16px;font-weight:700;font-size:14px;background:var(--panel-2);border:1px solid var(--line)}
+.btn:hover{border-color:var(--muted)}
+.btn.play{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.play:hover{filter:brightness(1.08)}
+.btn.on{color:var(--slime);border-color:var(--slime)}
+
+/* shelf */
+.shelf-head{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:36px 0 14px}
+.shelf-head h2{font-size:20px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 12px;font-size:13px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-3px);border-color:var(--muted)}
+.card .cover{border-radius:0}
+.card .cover .ttl{font-size:26px}
+.card-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card-body h3{font-size:16px}
+.card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;font-size:13px;color:var(--muted)}
+.owned{color:var(--slime);font-weight:700;font-size:12px}
+.empty{padding:40px 20px;text-align:center;color:var(--muted);background:var(--panel);border:1px dashed var(--line);border-radius:8px}
+.empty h3{color:var(--fg);margin-bottom:6px;font-size:18px}
+
+/* detail */
+.back{display:inline-block;margin-bottom:14px;color:var(--muted);text-decoration:none;font-size:14px}
+.detail{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
+.detail .cover .ttl{font-size:clamp(32px,6vw,64px)}
+.detail h1{font-size:clamp(24px,4vw,34px);margin-bottom:10px}
+.side{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin:0}
+.meta dt{color:var(--muted)}
+.meta dd{margin:0}
+.desc{max-width:65ch}
+.desc p{margin:0 0 12px}
+.rules{margin:18px 0 0;padding:16px 18px;background:var(--panel);border-radius:8px;border:1px solid var(--line);max-width:65ch}
+.rules h3{font-size:15px;margin-bottom:8px}
+.rules ol{margin:0;padding-left:20px}
+.version{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+
+/* library */
+.lib{display:flex;flex-direction:column;gap:10px}
+.lib-row{display:grid;grid-template-columns:160px minmax(0,1fr) auto;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px}
+.lib-row .cover .ttl{font-size:16px}
+.lib-row h3{font-size:16px}
+.lib-row p{margin:2px 0 0;color:var(--muted);font-size:13px}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(5,9,14,.72);display:grid;place-items:center;z-index:20;padding:20px}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:10px;max-width:420px;width:100%;padding:22px;display:flex;flex-direction:column;gap:12px}
+.modal h3{font-size:18px}
+.modal p{margin:0;color:var(--muted);font-size:14px}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:8px 16px;border-radius:6px;font-weight:700;font-size:14px;z-index:30}
+
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+footer .wrap{padding-block:20px}
+
+@media (max-width:760px){
+  .hero,.detail{grid-template-columns:1fr}
+  .lib-row{grid-template-columns:96px minmax(0,1fr)}
+  .lib-row .btns{grid-column:1/-1}
+  .search{max-width:none;order:3;flex-basis:100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#store" aria-label="SLIME DOCK ストアへ">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 18c0-7 5-13 12-13s12 6 12 13c0 2-1 3-2 3v4c0 1-1 1-1 0v-3h-2v6c0 1-1 1-1 0v-6h-2v3c0 1-1 1-1 0v-3h-6v5c0 1-1 1-1 0v-5H8v2c0 1-1 1-1 0v-2c-2 0-3-1-3-4z" fill="#7fc75a" stroke="#000" stroke-width="1.5"/><circle cx="12" cy="14" r="3.4" fill="#fff" stroke="#000"/><circle cx="21" cy="13" r="4" fill="#fff" stroke="#000"/><circle cx="12.6" cy="14.4" r="1.4"/><circle cx="21.8" cy="13.6" r="1.7"/></svg>
+      SLIME <b>DOCK</b>
+    </a>
+    <nav class="tabs" aria-label="メニュー">
+      <a href="#store" data-tab="store">ストア</a>
+      <a href="#library" data-tab="library">ライブラリ<span class="n" id="nLib">0</span></a>
+      <a href="#wishlist" data-tab="wishlist">ウィッシュリスト<span class="n" id="nWish">0</span></a>
+    </nav>
+    <label class="search"><span hidden>ゲームを検索</span><input id="q" type="search" placeholder="ゲームを検索" autocomplete="off"></label>
+  </div>
+</header>
+
+<main class="wrap" id="view"></main>
+
+<footer><div class="wrap">SLIME DOCK ― 押田ようへいの宇宙人ゲームがすべて無料で遊べる発着場。ライブラリとウィッシュリストはこのブラウザに保存されます。</div></footer>
+
+<script>
+const GAMES=[
+ {id:"probe-poker",title:"PROBE POKER",ver:"Ver1.2",short:"合計値カードで探り合う、宇宙人とのチップ勝負。",
+  tags:["カード","ポーカー","対AI"],c1:"#3a5a2a",c2:"#141c10",eye:"#e3b04b",players:"1人（対AI）",time:"10〜20分",
+  desc:["白いカードを出して合計値を作り、相手の手を探りながら青チップを賭けます。30枚対30枚で始まり、チップが0枚になった方の負けです。","相手のAIは5段階の強さを持ち、いまは段階2。レッドカードの効果で流れが一気に変わります。"],
+  rules:["白いカード3枚とレッドカード2枚が配られる","毎ラウンド、出すカードを選んでチップを賭ける","合計値で勝負し、勝った方がチップを取る","どちらかのチップが0枚になったら終わり"]},
+ {id:"card-game-real-3",title:"CARD GAME REAL 3",ver:"第1版",short:"4つのキーで合計値が跳ねる、7ラウンドのスライム争奪戦。",
+  tags:["カード","対AI","スライム"],c1:"#2b4a5c",c2:"#0d1820",eye:"#7fc75a",players:"1人（対AI）",time:"約10分",
+  desc:["カードを出すたびに合計値がジャンプ関数で動きます。最初は+6、キー4は−1、30を超えると跳ね返ります。","ラウンドごとにスライムを取り合い、7ラウンドが終わったら YOU WIN か YOU LOSE。フォールドの判断が勝敗を分けます。"],
+  rules:["手札からカードを選んで出す","合計値がジャンプ関数で動く","勝ったラウンドでスライムを取る","7ラウンド後、スライムの多い方の勝ち"]},
+ {id:"card-game-6",title:"CARD GAME 6",ver:"最新版",short:"レッドカードの効果が自分にも相手にも働く、交互出しの決定版。",
+  tags:["カード","対AI","戦略"],c1:"#5c2b2b",c2:"#1a0c0c",eye:"#e0705a",players:"1人（対AI）",time:"5〜10分",
+  desc:["手札5枚から1〜5枚を選び、相手と交互に場へ出します。レッドカードの効果は出した側だけでなく両側に働きます。","相手の手札は伏せたまま。どの順番で出すかを読み合うシリーズの最新作です。"],
+  rules:["手札は5枚","交互に1〜5枚を出す","レッドカードの効果が両側に働く","合計値の大きさで勝敗が決まる"]},
+ {id:"card-play-table",title:"CARD PLAY TABLE",ver:"演出入り完成版",short:"合計の比でビームを撃ち合う、シリーズの原点。",
+  tags:["カード","アクション","入門"],c1:"#4a3a6a",c2:"#120e1c",eye:"#9fd0ff",players:"1人（対AI）",time:"約3分",
+  desc:["白いカード5枚の手札から選んで場に出し、合計の比でビームを撃ち合います。","宇宙人の手が合計カードを置き、緑のカードが勝者へ飛んでいく演出が見どころ。ルールは一番かんたんなので最初の1本におすすめです。"],
+  rules:["白いカード5枚が配られる","出すカードを選んで場に置く","合計の比でビームの強さが決まる","相手を押し切った方の勝ち"]},
+ {id:"card-game-2",title:"CARD GAME 2",ver:"完成版",short:"ブラックホールが x と y を入れ替える、ひっくり返しのカードゲーム。",
+  tags:["カード","入門"],c1:"#1f1f3a",c2:"#06060f",eye:"#c08bff",players:"1人（対AI）",time:"約5分",
+  desc:["宇宙人カード27枚の山札で遊ぶ Card Game 1 に、ブラックホールのレッドカードを足しました。","ブラックホールを出すと白いカードの x と y が入れ替わり、それまでの有利不利が逆転します。"],
+  rules:["山札から手札を引く","カードを出して合計を作る","ブラックホールで x と y が入れ替わる","合計の大きい方の勝ち"]}
+];
+const FEATURED=["probe-poker","card-game-real-3","card-game-6"];
+
+// 保存（このブラウザだけ）
+function load(k){try{return JSON.parse(localStorage.getItem(k)||"[]")}catch(e){return[]}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+let lib=load("sd_lib"), wish=load("sd_wish");
+let tagFilter="すべて", heroIdx=0, heroTimer=null;
+
+const $=s=>document.querySelector(s);
+const byId=id=>GAMES.find(g=>g.id===id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function counts(){ $("#nLib").textContent=lib.length; $("#nWish").textContent=wish.length; }
+function toast(t){const el=document.createElement("div");el.className="toast";el.textContent=t;document.body.append(el);setTimeout(()=>el.remove(),1800)}
+
+/* カバーの絵：ゲームごとの色で、宇宙人の目と星を描く */
+function coverHTML(g,cls=""){return `<div class="cover ${cls}" style="--c1:${g.c1}"><canvas data-g="${g.id}"></canvas><div class="ttl">${esc(g.title)}</div></div>`}
+function seeded(str){let h=2166136261;for(const c of str){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return((h>>>0)%10000)/10000}}
+function paint(cv){
+  const g=byId(cv.dataset.g); const r=cv.getBoundingClientRect(); const d=window.devicePixelRatio||1;
+  const W=cv.width=Math.max(1,r.width*d), H=cv.height=Math.max(1,r.height*d); const x=cv.getContext("2d"); const rnd=seeded(g.id);
+  const gr=x.createLinearGradient(0,0,W,H); gr.addColorStop(0,g.c1); gr.addColorStop(1,g.c2); x.fillStyle=gr; x.fillRect(0,0,W,H);
+  x.fillStyle="rgba(255,255,255,.7)"; for(let i=0;i<60;i++){x.beginPath();x.arc(rnd()*W,rnd()*H*.7,rnd()*1.6*d,0,7);x.fill()}
+  // 地平線の丘
+  x.fillStyle="rgba(0,0,0,.35)"; x.beginPath(); x.moveTo(0,H); for(let i=0;i<=8;i++){x.lineTo(W*i/8,H*(.78+rnd()*.1))} x.lineTo(W,H); x.fill();
+  // 大きな目（数と位置はゲームごと）
+  const n=1+Math.floor(rnd()*3);
+  for(let i=0;i<n;i++){
+    const ex=W*(.55+rnd()*.38), ey=H*(.2+rnd()*.35), er=H*(.09+rnd()*.12);
+    x.lineWidth=Math.max(2,er*.12); x.strokeStyle="#000";
+    x.fillStyle="#f4f1e6"; x.beginPath(); x.ellipse(ex,ey,er,er*.92,0,0,7); x.fill(); x.stroke();
+    x.fillStyle=g.eye; x.beginPath(); x.arc(ex+er*.18,ey+er*.08,er*.5,0,7); x.fill();
+    x.fillStyle="#000"; x.beginPath(); x.arc(ex+er*.24,ey+er*.1,er*.26,0,7); x.fill();
+    x.fillStyle="#fff"; x.beginPath(); x.arc(ex+er*.05,ey-er*.12,er*.1,0,7); x.fill();
+  }
+  // スライムのしずく
+  x.fillStyle="rgba(127,199,90,.9)"; x.strokeStyle="#000"; x.lineWidth=Math.max(1.5,2*d);
+  for(let i=0;i<4;i++){const sx=W*rnd(), len=H*(.05+rnd()*.14), w=W*.02+rnd()*W*.02;x.beginPath();x.moveTo(sx-w,0);x.lineTo(sx-w*.5,len);x.arc(sx,len,w*.5,Math.PI,0,true);x.lineTo(sx+w,0);x.fill();x.stroke()}
+}
+function paintAll(){document.querySelectorAll("canvas[data-g]").forEach(paint)}
+
+function tagsHTML(g){return `<div class="tags">${g.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>`}
+function actionBtns(g){
+  const owned=lib.includes(g.id), wished=wish.includes(g.id);
+  return `<div class="btns">
+    <button class="btn play" data-act="play" data-id="${g.id}">無料でプレイ</button>
+    <button class="btn ${owned?"on":""}" data-act="lib" data-id="${g.id}">${owned?"ライブラリにあります":"ライブラリに追加"}</button>
+    <button class="btn ${wished?"on":""}" data-act="wish" data-id="${g.id}" aria-pressed="${wished}">${wished?"★ ウィッシュリスト":"☆ ウィッシュリスト"}</button>
+  </div>`}
+
+function cardHTML(g){return `<a class="card" href="#game-${g.id}">${coverHTML(g)}
+  <div class="card-body"><h3>${esc(g.title)}</h3>${tagsHTML(g)}
+  <div class="card-foot">${lib.includes(g.id)?'<span class="owned">ライブラリにあります</span>':`<span>${esc(g.time)}</span>`}<span class="free">無料</span></div></div></a>`}
+
+function storeView(){
+  const q=$("#q").value.trim().toLowerCase();
+  const allTags=["すべて",...new Set(GAMES.flatMap(g=>g.tags))];
+  const list=GAMES.filter(g=>(tagFilter==="すべて"||g.tags.includes(tagFilter))&&(!q||(g.title+g.short+g.tags.join("")).toLowerCase().includes(q)));
+  const f=byId(FEATURED[heroIdx]);
+  return `${q?"":`<section aria-label="おすすめ">
+    <p class="eyebrow" style="margin:0 0 10px">注目のゲーム</p>
+    <div class="hero">
+      <a href="#game-${f.id}" aria-label="${esc(f.title)} の詳細">${coverHTML(f)}</a>
+      <div class="hero-info"><h2>${esc(f.title)} <span class="version">${esc(f.ver)}</span></h2><p>${esc(f.short)}</p>${tagsHTML(f)}
+      <span class="price"><span class="free">無料</span></span>${actionBtns(f)}</div>
+    </div>
+    <div class="dots">${FEATURED.map((id,i)=>`<button aria-label="${esc(byId(id).title)}" aria-pressed="${i===heroIdx}" data-hero="${i}"></button>`).join("")}</div>
+  </section>`}
+  <div class="shelf-head"><h2>${q?`「${esc($("#q").value)}」の検索結果`:"すべてのゲーム"}</h2>
+    <div class="chips" role="group" aria-label="タグで絞り込む">${allTags.map(t=>`<button class="chip" data-tag="${esc(t)}" aria-pressed="${t===tagFilter}">${esc(t)}</button>`).join("")}</div></div>
+  ${list.length?`<div class="grid">${list.map(cardHTML).join("")}</div>`:`<div class="empty"><h3>見つかりませんでした</h3>別のことばで検索するか、タグを「すべて」に戻してください。</div>`}`;
+}
+
+function detailView(g){
+  return `<a class="back" href="#store">← ストアに戻る</a>
+  <div class="detail">
+    <div style="min-width:0">${coverHTML(g)}
+      <div class="desc" style="margin-top:18px">${g.desc.map(p=>`<p>${esc(p)}</p>`).join("")}</div>
+      <div class="rules"><h3>遊び方</h3><ol>${g.rules.map(r=>`<li>${esc(r)}</li>`).join("")}</ol></div>
+    </div>
+    <aside class="side">
+      <div><h1>${esc(g.title)}</h1>${tagsHTML(g)}</div>
+      <p style="margin:0;color:var(--muted);font-size:14px">${esc(g.short)}</p>
+      <dl class="meta"><dt>価格</dt><dd><span class="free">無料</span></dd><dt>人数</dt><dd>${esc(g.players)}</dd><dt>1回の時間</dt><dd>${esc(g.time)}</dd><dt>版</dt><dd class="version">${esc(g.ver)}</dd><dt>作者</dt><dd>押田ようへい</dd></dl>
+      ${actionBtns(g)}
+    </aside>
+  </div>`;
+}
+
+function listView(ids,kind){
+  const gs=ids.map(byId).filter(Boolean);
+  const title=kind==="library"?"ライブラリ":"ウィッシュリスト";
+  if(!gs.length) return `<h1 style="font-size:24px;margin-bottom:16px">${title}</h1><div class="empty"><h3>${kind==="library"?"まだゲームがありません":"まだ何も入っていません"}</h3>ストアのゲームで「${kind==="library"?"ライブラリに追加":"☆ ウィッシュリスト"}」を押すと、ここに並びます。<div class="btns" style="justify-content:center;margin-top:14px"><a class="btn play" href="#store" style="text-decoration:none">ストアを見る</a></div></div>`;
+  return `<h1 style="font-size:24px;margin-bottom:16px">${title} <span class="version">${gs.length}本</span></h1><div class="lib">${gs.map(g=>`<div class="lib-row">
+    <a href="#game-${g.id}" aria-label="${esc(g.title)} の詳細">${coverHTML(g)}</a>
+    <div style="min-width:0"><h3>${esc(g.title)}</h3><p>${esc(g.short)}</p></div>
+    <div class="btns"><button class="btn play" data-act="play" data-id="${g.id}">プレイ</button>
+    <button class="btn" data-act="${kind==="library"?"lib":"wish"}" data-id="${g.id}">外す</button></div></div>`).join("")}</div>`;
+}
+
+function render(){
+  const h=location.hash.slice(1)||"store";
+  let tab="store", html;
+  if(h.startsWith("game-")&&byId(h.slice(5))){html=detailView(byId(h.slice(5)))}
+  else if(h==="library"){tab="library";html=listView(lib,"library")}
+  else if(h==="wishlist"){tab="wishlist";html=listView(wish,"wishlist")}
+  else html=storeView();
+  $("#view").innerHTML=html;
+  document.querySelectorAll(".tabs a").forEach(a=>{if(a.dataset.tab===tab)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  counts(); requestAnimationFrame(paintAll);
+}
+
+function playModal(g){
+  const bg=document.createElement("div"); bg.className="modal-bg";
+  bg.innerHTML=`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><h3 id="mt">${esc(g.title)}</h3>
+  <p>このゲームはまだストアに入っていません。次の段階でゲーム本体を入れると、このボタンからそのまま遊べるようになります。</p>
+  <div class="btns"><button class="btn play" data-close>閉じる</button></div></div>`;
+  bg.addEventListener("click",e=>{if(e.target===bg||e.target.hasAttribute("data-close"))bg.remove()});
+  document.body.append(bg); bg.querySelector("[data-close]").focus();
+}
+
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-act],[data-tag],[data-hero]"); if(!b) return;
+  if(b.dataset.tag){tagFilter=b.dataset.tag;render();return}
+  if(b.dataset.hero){heroIdx=+b.dataset.hero;restartHero();render();return}
+  const g=byId(b.dataset.id); e.preventDefault();
+  if(b.dataset.act==="play"){if(!lib.includes(g.id)){lib.push(g.id);save("sd_lib",lib)}playModal(g);render();return}
+  if(b.dataset.act==="lib"){const has=lib.includes(g.id);lib=has?lib.filter(i=>i!==g.id):[...lib,g.id];save("sd_lib",lib);toast(has?"ライブラリから外しました":"ライブラリに追加しました")}
+  if(b.dataset.act==="wish"){const has=wish.includes(g.id);wish=has?wish.filter(i=>i!==g.id):[...wish,g.id];save("sd_wish",wish);toast(has?"ウィッシュリストから外しました":"ウィッシュリストに追加しました")}
+  render();
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelector(".modal-bg")?.remove()});
+$("#q").addEventListener("input",()=>{if(location.hash&&location.hash!=="#store"){location.hash="store"}else render()});
+function restartHero(){clearInterval(heroTimer);heroTimer=setInterval(()=>{const h=location.hash.slice(1)||"store";if(h==="store"&&!$("#q").value&&!document.querySelector(".modal-bg")){heroIdx=(heroIdx+1)%FEATURED.length;render()}},7000)}
+window.addEventListener("hashchange",()=>{render();scrollTo(0,0)});
+let rt;window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(paintAll,150)});
+render();restartHero();
+</script>
+
 </html>
